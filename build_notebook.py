@@ -155,6 +155,61 @@ cells.append(nbf.v4.new_code_cell(
     "print(f\"Batch size for processing: {BATCH_SIZE:,} rows\")"
 ))
 
+cells.append(nbf.v4.new_markdown_cell(
+    "### 4.1 Filter Empty Columns\n\n"
+    "This function identifies and filters out columns that only contain 0, null, or blank values.\n"
+    "Such columns provide no useful information for anomaly detection."
+))
+
+cells.append(nbf.v4.new_code_cell(
+    "def filter_empty_columns(df, columns_to_check):\n"
+    "    \"\"\"\n"
+    "    Filter out columns that only contain 0, null, or blank values.\n"
+    "    \n"
+    "    Args:\n"
+    "        df: DataFrame to check\n"
+    "        columns_to_check: List of column names to evaluate\n"
+    "    \n"
+    "    Returns:\n"
+    "        List of column names that contain meaningful data\n"
+    "    \"\"\"\n"
+    "    filtered_columns = []\n"
+    "    \n"
+    "    for col in columns_to_check:\n"
+    "        if col not in df.columns:\n"
+    "            continue\n"
+    "        \n"
+    "        col_data = df[col]\n"
+    "        \n"
+    "        is_null_or_empty = col_data.isna() | (col_data == 0) | (col_data == '') | (col_data == ' ')\n"
+    "        \n"
+    "        if not is_null_or_empty.all():\n"
+    "            filtered_columns.append(col)\n"
+    "        else:\n"
+    "            print(f\"Filtered out column '{col}': only contains 0/null/blank values\")\n"
+    "    \n"
+    "    return filtered_columns\n\n"
+    "print(\"Empty column filter function defined.\")"
+))
+
+cells.append(nbf.v4.new_markdown_cell(
+    "### 4.2 Apply Column Filtering\n\n"
+    "Use a sample of the data to identify which columns have meaningful values."
+))
+
+cells.append(nbf.v4.new_code_cell(
+    "print(\"Filtering columns based on sample data...\")\n"
+    "print(f\"Original numeric columns: {len(NUMERIC_COLUMNS)}\")\n"
+    "print(f\"Original categorical columns: {len(CATEGORICAL_COLUMNS)}\")\n\n"
+    "NUMERIC_COLUMNS = filter_empty_columns(sample_df, NUMERIC_COLUMNS)\n"
+    "CATEGORICAL_COLUMNS = filter_empty_columns(sample_df, CATEGORICAL_COLUMNS)\n\n"
+    "print(f\"\\nAfter filtering:\")\n"
+    "print(f\"Numeric columns with data: {len(NUMERIC_COLUMNS)}\")\n"
+    "print(f\"Categorical columns with data: {len(CATEGORICAL_COLUMNS)}\")\n"
+    "print(f\"\\nFiltered numeric columns: {NUMERIC_COLUMNS}\")\n"
+    "print(f\"Filtered categorical columns: {CATEGORICAL_COLUMNS}\")"
+))
+
 print("Adding batch loading function...")
 
 cells.append(nbf.v4.new_markdown_cell(
